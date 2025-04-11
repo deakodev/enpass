@@ -1,3 +1,3 @@
 # enpass
 
-cml password encryptor and manager
+cli password encryptor and manager
