@@ -1,5 +1,5 @@
 
-from cli import cli_args, cli_init, cli_login
+from en_cli import cli_args, cli_init, cli_login
 
 def main():
     status = None

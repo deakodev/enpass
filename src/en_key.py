@@ -1,5 +1,5 @@
 import os
-from config import ENPASS_KEY_PATH
+from en_config import ENPASS_KEY_PATH
 from cryptography.fernet import Fernet
 
 def key_generate():

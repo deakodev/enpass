@@ -2,9 +2,10 @@ import argparse
 from argparse import Namespace
 import getpass
 
-from password import encrypt, password_hash
-from key import key_generate, key_retrieve, key_store
-from vault import vault_master_confirm, vault_master_packet, vault_master_store
+from en_hash import password_hash
+from en_key import key_generate, key_retrieve, key_store
+from en_master import master_packet
+from en_vault import vault_master_confirm, vault_master_store
 
 def user_input(message):
     return getpass.getpass(message)
@@ -32,18 +33,17 @@ def cli_init() -> str | None:
     master_provided = user_confirmed_input("Set master password: ")
     master_hash_str = password_hash(master_provided)
 
-    master_packet = vault_master_packet(master_hash_str)
-    vault_master_store(master_packet)
+    packet = master_packet(master_hash_str)
+    vault_master_store(packet)
     return f'Enpass initialized!'
 
 def cli_login(master_arg: str | None = None) -> str | None:
     enpass_key = key_retrieve()
     if not enpass_key:
-        print(f"[Error] Encryption key not found.")
-        return None
+        return f"[Error] Encryption key not found."
     
     master_provided = user_input("Enter master password: ")
   
     if vault_master_confirm(master_provided):
         print("cli_login")
-    return None
+    return f"Incorrect master password provided. Please try again."
