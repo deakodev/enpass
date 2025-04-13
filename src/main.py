@@ -1,17 +1,12 @@
-
 from en_cli import cli_args, cli_init, cli_login
 
 def main():
-    status = None
+    result = None
     args = cli_args()
     match args.command:
-        case "init":
-            status = cli_init()
-        case "login":
-            status = cli_login(args.master)
-            
-    if status:  
-        print(status) 
+        case "init": result = cli_init()
+        case "login": result = cli_login(args.master)
+    print(result)
 
 if __name__ == "__main__":
     main()

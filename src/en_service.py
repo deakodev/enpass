@@ -1,30 +1,28 @@
+from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import TypedDict
 
-class PublicFields(TypedDict):
-     name: str
-     type: str | None
-     link: str | None
+@dataclass
+class PublicFields:
+    name: str
+    type: str | None
+    link: str | None
 
-class PrivateFields(TypedDict):
+@dataclass
+class PrivateFields:
     encrypted_username: str
     encrypted_password: str
 
-class ServicePacket(TypedDict):
+@dataclass 
+class ServicePacket:
     public: PublicFields
     private: PrivateFields
     updated_at: str
 
-public_service_data = { "name": None, "type": None, "link": None }
-
-def service_packet(encrypted_username, encrypted_password, public_fields) -> ServicePacket:
-    return {
-        "public": public_fields,
-        "private": {
-            "encrypted_username": encrypted_username.decode(),
-            "encrypted_password": encrypted_password.decode()
-        },
-        "updated_at": datetime.now(timezone.utc).isoformat()
-    }
+def service_packet(encrypted_username, encrypted_password, service: PublicFields) -> ServicePacket:
+    return ServicePacket(
+        public=PublicFields(name=service.name, type=service.type, link=service.link),
+        private=PrivateFields(encrypted_username=encrypted_username.decode(), encrypted_password=encrypted_password.decode()),
+        updated_at=datetime.now(timezone.utc).isoformat()
+    )
 
 
