@@ -7,6 +7,7 @@ from en_key import key_generate, key_retrieve, key_store
 from en_master import master_packet
 from en_result import Result
 from en_vault import vault_master_confirm, vault_master_retrieve, vault_master_store
+from en_session import is_logged_in, login, logout
 
 def user_input(message):
     return getpass.getpass(message)
@@ -22,7 +23,7 @@ def user_confirmed_input(message):
 
 def cli_args() -> Namespace: 
     parser = argparse.ArgumentParser(description="Enpass CLI")
-    parser.add_argument("command", choices=["init", "login", "set", "get"], help="Command to execute")
+    parser.add_argument("command", choices=["init", "login", "logout", "set", "get"], help="Command to execute")
     parser.add_argument("--master", help="Master password for login")
     return parser.parse_args()
 
@@ -44,10 +45,21 @@ def cli_init() -> Result:
     vault_master_store(packet)
     return Result.INIT_SUCCESS
 
+
 def cli_login(master_password: str | None = None) -> Result:
+    if is_logged_in():
+        return Result.LOGIN_REDUNDANT
+
     if master_password is None:
-        master_password = user_input("Enter master password: ")
+        from getpass import getpass
+        master_password = getpass("Enter master password: ")
+
     if vault_master_confirm(master_password):
-        print("cli_login") 
+        login()
         return Result.LOGIN_SUCCESS
     return Result.LOGIN_FAILED
+
+
+def cli_logout():
+    logout()
+    return Result.LOGOUT_SUCCESS
