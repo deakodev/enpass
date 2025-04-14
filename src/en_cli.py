@@ -7,7 +7,7 @@ from en_key import key_generate, key_retrieve, key_store
 from en_master import master_packet
 from en_result import Result
 from en_vault import vault_master_confirm, vault_master_retrieve, vault_master_store
-from en_session import is_logged_in, login, logout
+from en_session import session_valid, session_start, session_end
 
 def user_input(message):
     return getpass.getpass(message)
@@ -47,7 +47,7 @@ def cli_init() -> Result:
 
 
 def cli_login(master_password: str | None = None) -> Result:
-    if is_logged_in():
+    if session_valid():
         return Result.LOGIN_REDUNDANT
 
     if master_password is None:
@@ -55,11 +55,9 @@ def cli_login(master_password: str | None = None) -> Result:
         master_password = getpass("Enter master password: ")
 
     if vault_master_confirm(master_password):
-        login()
-        return Result.LOGIN_SUCCESS
+        return session_start()
     return Result.LOGIN_FAILED
 
 
-def cli_logout():
-    logout()
-    return Result.LOGOUT_SUCCESS
+def cli_logout() -> Result:
+    return session_end()

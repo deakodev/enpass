@@ -7,6 +7,7 @@ class Result(Enum):
     LOGIN_REDUNDANT = "Already logged in to enpass."
     LOGIN_FAILED = "Login unsuccessful. Please try again."
     LOGOUT_SUCCESS = "Logged out of enpass account."
+    LOGOUT_REDUNDANT = "Already logged out of enpass."
 
     def __str__(self):
         return f"[{self.name}] {self.value}"

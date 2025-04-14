@@ -1,17 +1,21 @@
 from en_config import ENPASS_SESSION_PATH, ENPASS_SESSION_TIMEOUT
 from datetime import datetime
 import json
+from en_result import Result
 
-def login():
+def session_start() -> Result:
     expires_at = (datetime.now() + ENPASS_SESSION_TIMEOUT).isoformat()
-    with open(ENPASS_SESSION_PATH, "w") as f:
-        json.dump({"expires_at": expires_at}, f)
+    try:
+        with open(ENPASS_SESSION_PATH, "w") as f:
+            json.dump({"expires_at": expires_at}, f)
+        return Result.LOGIN_SUCCESS
+    except (FileNotFoundError, json.JSONDecodeError) as error:
+        print(f"[Error] Unable to read vault: {error}")
+        return Result.LOGIN_FAILED
 
-
-def is_logged_in() -> bool:
+def session_valid() -> bool:
     if not ENPASS_SESSION_PATH.exists():
         return False
-
     try: 
         with open(ENPASS_SESSION_PATH, "r") as f:
             data = json.load(f)
@@ -21,7 +25,10 @@ def is_logged_in() -> bool:
         return False 
 
 
-def logout():
+def session_end() -> Result:
     if ENPASS_SESSION_PATH.exists():
         ENPASS_SESSION_PATH.unlink()
+        return Result.LOGOUT_SUCCESS
+    else: 
+        return Result.LOGOUT_REDUNDANT
  
