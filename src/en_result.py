@@ -10,6 +10,7 @@ class Result(IntFlag):
     LOGOUT_REDUNDANT = auto()
     RESET_SUCCESS = auto()
     SERVICE_LIST = auto()
+    SERVICE_LIST_FAILED = auto()
     SERVICE_ADDED = auto()
     SERVICE_REMOVED = auto()
     SERVICE_UPDATED = auto()
@@ -17,7 +18,6 @@ class Result(IntFlag):
     SESSION_INACTIVE = auto()
 
     def __str__(self):
-        messages = [RESULT_MESSAGES[flag] for flag in Result if flag in self]
         return "\n".join(f"[{flag.name}] {RESULT_MESSAGES[flag]}" for flag in Result if flag in self)
 
 

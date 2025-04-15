@@ -1,12 +1,14 @@
 import argparse
+from dataclasses import asdict
 from getpass import getpass
+import json
 
 from en_crypt import encrypt
 from en_hash import password_hash
 from en_key import key_generate, key_retrieve, key_store
 from en_master import master_packet
 from en_result import Result
-from en_service import PublicFields, service_packet
+from en_service import PublicFields, ServicePacket, service_packet
 from en_session import session_active, session_start, session_end
 from en_vault import vault_master_confirm, vault_open, vault_save
 
@@ -69,9 +71,27 @@ def cli_reset(_args) -> Result:
 
 
 def cli_list(_args) -> Result:
-    
-    
-    return Result.SERVICE_LIST
+    if not session_active():
+        return Result.SERVICE_ADDED_FAILED | Result.SESSION_INACTIVE
+
+    vault = vault_open()
+    if vault.services:
+        # Print header
+        print(f"\n{'Name':<20}| {'Type':<15}| {'Link'}")
+        print("-" * 60)
+
+        # Print rows
+        for service in vault.services:
+            service_info = service.public if isinstance(service.public, dict) else asdict(service.public)
+            name = service_info['name']
+            type_ = service_info['type']
+            link = service_info['link']
+            print(f"{name:<20}| {type_:<15}| {link}")
+        print("-" * 60, "\n")
+        return Result.SERVICE_LIST
+
+    return Result.SERVICE_LIST_FAILED
+
 
 
 def cli_add(_args) -> Result:
