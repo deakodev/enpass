@@ -1,9 +1,9 @@
 from dataclasses import asdict, dataclass
 import json
 from pathlib import Path
+
 from en_config import ENPASS_VAULT_PATH 
-from en_hash import password_verify
-from en_master import MasterPacket
+from en_master import MasterPacket, master_confirm
 from en_service import ServicePacket
 
 
@@ -33,30 +33,12 @@ def vault_open() -> Vault:
         return Vault(MasterPacket(), [])
 
 
-def vault_master_retrieve() -> str | None:
-    return vault_open().master.hashed_password or None
-
-
-def vault_master_store(packet: MasterPacket):
+def vault_save(vault: Vault):
     filepath = Path(ENPASS_VAULT_PATH)
-    
-    try:
-        with filepath.open("r") as file:
-            data = json.load(file)
-    except (FileNotFoundError, json.JSONDecodeError):
-        data = {}
-
-    data["master"] = asdict(packet)
-
     with filepath.open("w") as file:
-        json.dump(data, file, indent=4)
+        json.dump(asdict(vault), file, indent=4)
 
 
 def vault_master_confirm(password: str) -> bool:
-    hashed_password = vault_master_retrieve()
-    
-    if not hashed_password:
-        print("No master password found in vault.")
-        return False
-
-    return password_verify(password, hashed_password)
+    vault = vault_open()
+    return master_confirm(password, vault.master.hashed_password)

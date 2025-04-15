@@ -1,8 +1,8 @@
-from en_cli import cli_args, command_map
+from en_cli import cli_args, COMMAND_MAP
 
 def main():
     args = cli_args()
-    cli_func = command_map[args.command]
+    cli_func = COMMAND_MAP[args.command]
     result = cli_func(args)
     print(result)
 

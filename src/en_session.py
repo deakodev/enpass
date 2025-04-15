@@ -13,7 +13,7 @@ def session_start() -> Result:
         print(f"[Error] Unable to read vault: {error}")
         return Result.LOGIN_FAILED
 
-def session_valid() -> bool:
+def session_active() -> bool:
     if not ENPASS_SESSION_PATH.exists():
         return False
     try: 
