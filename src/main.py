@@ -1,12 +1,9 @@
-from en_cli import cli_args, cli_init, cli_login, cli_logout
+from en_cli import cli_args, command_map
 
 def main():
-    result = None
     args = cli_args()
-    match args.command:
-        case "init": result = cli_init()
-        case "login": result = cli_login(args.master)
-        case "logout": result = cli_logout()
+    cli_func = command_map[args.command]
+    result = cli_func(args)
     print(result)
 
 if __name__ == "__main__":

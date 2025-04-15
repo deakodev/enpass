@@ -1,5 +1,4 @@
 import argparse
-from argparse import Namespace
 import getpass
 
 from en_hash import password_hash
@@ -21,14 +20,16 @@ def user_confirmed_input(message):
         else:
             print("Input does not match. Please try again.")
 
-def cli_args() -> Namespace: 
+def cli_args() -> argparse.Namespace: 
     parser = argparse.ArgumentParser(description="Enpass CLI")
-    parser.add_argument("command", choices=["init", "login", "logout", "set", "get"], help="Command to execute")
-    parser.add_argument("--master", help="Master password for login")
+    commands = list(command_map.keys())
+    parser.add_argument("command",  choices=commands, help="Command to execute")
+    
+    parser.add_argument("-m", "--master", help="Master password for login")
+
     return parser.parse_args()
 
-def cli_init() -> Result:
-    # determine if already initialized
+def cli_init(_args) -> Result:
     enpass_key = key_retrieve()
     master_hashed_password = vault_master_retrieve()
     if enpass_key and master_hashed_password:
@@ -59,5 +60,47 @@ def cli_login(master_password: str | None = None) -> Result:
     return Result.LOGIN_FAILED
 
 
-def cli_logout() -> Result:
+def cli_logout(_args) -> Result:
     return session_end()
+
+
+def cli_reset(_args) -> Result:
+
+
+    return Result.RESET_SUCCESS
+
+
+def cli_list(_args) -> Result:
+    
+    
+    return Result.SERVICE_LIST
+
+
+def cli_add(_args) -> Result:
+
+
+    return Result.SERVICE_ADDED
+
+
+def cli_remove(_args) -> Result:
+
+
+    return Result.SERVICE_REMOVED
+
+
+def cli_update(_args) -> Result:
+
+
+    return Result.SERVICE_UPDATED
+
+
+command_map = {
+    "init": cli_init,
+    "login": cli_login,
+    "logout": cli_logout,
+    "reset": cli_reset,
+    "list": cli_list,
+    "add": cli_add,
+    "remove": cli_remove,
+    "update": cli_update,
+}

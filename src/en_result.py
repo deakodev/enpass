@@ -1,4 +1,4 @@
-from enum import Enum, auto
+from enum import Enum
 
 class Result(Enum):
     INIT_SUCCESS = "Enpass has been initialized."
@@ -8,6 +8,11 @@ class Result(Enum):
     LOGIN_FAILED = "Login unsuccessful. Please try again."
     LOGOUT_SUCCESS = "Logged out of enpass account."
     LOGOUT_REDUNDANT = "Already logged out of enpass."
+    RESET_SUCCESS = ""
+    SERVICE_LIST = ""
+    SERVICE_ADDED = ""
+    SERVICE_REMOVED = ""
+    SERVICE_UPDATED = ""
 
     def __str__(self):
         return f"[{self.name}] {self.value}"
