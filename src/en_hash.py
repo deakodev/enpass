@@ -1,10 +1,12 @@
 import base64
 import bcrypt
 
+
 def password_hash(password: str) -> str:
     hashed_bytes = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
     hashed_password = base64.b64encode(hashed_bytes).decode("utf-8")
     return hashed_password
+
 
 def password_verify(password: str, hashed_password: str) -> bool:
     try:

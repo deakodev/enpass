@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 
 from en_config import ENPASS_VAULT_PATH 
+from en_key import key_retrieve
 from en_master import MasterPacket, master_confirm
 from en_service import ServicePacket
 
@@ -33,12 +34,26 @@ def vault_open() -> Vault:
         return Vault(MasterPacket(), [])
 
 
-def vault_save(vault: Vault):
+def vault_save(vault: Vault) -> bool:
     filepath = Path(ENPASS_VAULT_PATH)
-    with filepath.open("w") as file:
-        json.dump(asdict(vault), file, indent=4)
+    try:
+        with filepath.open("w") as file:
+            json.dump(asdict(vault), file, indent=4)
+        return True
+    except (OSError, TypeError, ValueError) as error:
+        print(f"[Error] Failed to save vault: {error}")
+        return False
 
 
 def vault_master_confirm(password: str) -> bool:
     vault = vault_open()
     return master_confirm(password, vault.master.hashed_password)
+
+
+def vault_and_key() -> tuple[Vault, str] | None:
+    vault = vault_open()
+    key = key_retrieve()
+    if not vault.master.hashed_password or key is None:
+        print("[!] Could not retrieve key or vault is missing master password.")
+        return None
+    return vault, key

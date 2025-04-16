@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 
 
@@ -29,4 +29,11 @@ def service_packet(service: PublicFields, encrypted_username, encrypted_password
         updated_at=datetime.now(timezone.utc).isoformat()
     )
 
+
+def service_public_unpack(service) -> dict:
+    return service.public if isinstance(service.public, dict) else asdict(service.public)
+
+
+def service_private_unpack(service) -> dict:
+    return service.private if isinstance(service.private, dict) else asdict(service.private)
 
