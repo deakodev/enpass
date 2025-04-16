@@ -8,7 +8,7 @@ from en_hash import password_hash
 from en_key import key_generate, key_retrieve, key_store
 from en_master import master_packet
 from en_result import Result
-from en_service import PublicFields, ServicePacket, service_packet
+from en_service import PublicFields, service_packet
 from en_session import session_active, session_start, session_end
 from en_vault import vault_master_confirm, vault_open, vault_save
 
@@ -27,6 +27,7 @@ def cli_args() -> argparse.Namespace:
     parser.add_argument("command", choices=commands, help="Command to execute")
     
     parser.add_argument("-m", "--master", help="Master password for login")
+    parser.add_argument("-n", "--name", help="Name of the service")
 
     return parser.parse_args()
 
@@ -85,13 +86,18 @@ def cli_list(_args) -> Result:
             service_info = service.public if isinstance(service.public, dict) else asdict(service.public)
             name = service_info['name']
             type_ = service_info['type']
+            if type_ is None:
+                type_ = "None"
+
             link = service_info['link']
+            if link is None:
+                link = "None"
+            
             print(f"{name:<20}| {type_:<15}| {link}")
         print("-" * 60, "\n")
         return Result.SERVICE_LIST
 
     return Result.SERVICE_LIST_FAILED
-
 
 
 def cli_add(_args) -> Result:
@@ -124,10 +130,41 @@ def cli_add(_args) -> Result:
 
     return Result.SERVICE_ADDED_FAILED
  
+from dataclasses import asdict
 
-def cli_remove(_args) -> Result:
+def cli_view(args) -> Result:
+    if not session_active():
+        return Result.SERVICE_ADDED_FAILED | Result.SESSION_INACTIVE
+
+    vault = vault_open()
+    if args.name and vault.services:
+        for service in vault.services:
+            service_info = service.public if isinstance(service.public, dict) else asdict(service.public)
+            if service_info["name"] == args.name:
+                service_info = service.private if isinstance(service.private, dict) else asdict(service.private)
+                print(f"Private fields for '{args.name}':")
+                for key, value in service_info.items():
+                    print(f"  {key}: {value}")
+                return Result.SERVICE_ADDED
+        
+        print(f"No service found with name '{args.name}'")
+        return Result.SERVICE_ADDED_FAILED
+
+    return Result.SERVICE_ADDED_FAILED
 
 
+def cli_remove(args) -> Result:
+    if not session_active():
+        return Result.SERVICE_ADDED_FAILED | Result.SESSION_INACTIVE
+    
+    vault = vault_open()
+    if args.name and vault.services:
+        vault.services = [service for service in vault.services if isinstance(service.public, dict) and service.public["name"] != args.name]
+        is_confirmed = "Y" == input(f"Delete {args.name} data? [Y/n]: ")
+        if is_confirmed:
+            vault_save(vault)
+            return Result.SERVICE_REMOVED
+    
     return Result.SERVICE_REMOVED
 
 
@@ -144,6 +181,7 @@ COMMAND_MAP = {
     "reset": cli_reset,
     "list": cli_list,
     "add": cli_add,
+    "view": cli_view,
     "remove": cli_remove,
     "update": cli_update,
 }
