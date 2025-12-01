@@ -1,4 +1,4 @@
-# 🔐 Enpass CLI
+# Enpass CLI
 
 Enpass CLI is a lightweight, secure, and offline-first password manager built for the terminal. It lets you store, retrieve, and manage passwords, secure notes, and other sensitive data using strong encryption — all through a simple command-line interface.
 
@@ -6,20 +6,20 @@ Enpass CLI is a lightweight, secure, and offline-first password manager built fo
 
 ---
 
-## 🚀 Features
+## Features
 
-- 🔑 Store and retrieve encrypted passwords
-- 📝 Secure notes and custom entries
-- 📁 Categorized vault items (logins, notes, cards, projects, etc.)
-- 🔒 AES-256 encryption using a master password
-- 🧠 Login/logout session support
-- 💾 Encrypted local vault file
-- 📜 Clean CLI output
-- 🧪 Simple unit testing support
+- Store and retrieve encrypted passwords
+- Secure notes and custom entries
+- Categorized vault items (logins, notes, cards, projects, etc.)
+- AES-256 encryption using a master password
+- Login/logout session support
+- Encrypted local vault file
+- Clean CLI output
+- Simple unit testing support
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 - **Language**: Python 3.x
 - **Encryption**: `cryptography` (Fernet/AES)
@@ -28,7 +28,7 @@ Enpass CLI is a lightweight, secure, and offline-first password manager built fo
 
 ---
 
-## 📦 Installation
+## Installation
 
 Clone the repository:
 
@@ -47,7 +47,7 @@ pip install -r requirements.txt
 
 ---
 
-## 🧪 Running & Testing
+## Running & Testing
 
 Run the CLI app:
 
@@ -77,7 +77,7 @@ Run tests:
 
 ---
 
-## 🧱 Project Structure
+## Project Structure
 
 ```
 enpass/
@@ -91,7 +91,7 @@ enpass/
 
 ---
 
-## 🔐 Security
+## Security
 
 - AES-256 encryption (via Fernet)
 - Master password never stored
@@ -100,7 +100,7 @@ enpass/
 
 ---
 
-## 📄 License
+## License
 
 This project is open source under the [MIT License](LICENSE).
 
